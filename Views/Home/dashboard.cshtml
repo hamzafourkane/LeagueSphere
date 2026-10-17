@@ -1,0 +1,183 @@
+@model Equipe?
+@{
+    ViewData["Title"] = "Tableau de Bord - Admin";
+}
+
+<div class="position-relative overflow-hidden p-4 p-md-5 mb-4 text-white rounded bg-dark"
+     style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
+    <div class="col-md-8 px-0" style="position: relative; z-index: 2;">
+        <h1 class="display-5 fw-bold">Espace Administration ⚽</h1>
+        <p class="lead my-3">
+            Gérez vos clubs, planifiez les rencontres officielles et suivez les statistiques en temps réel sur <strong>LeagueSphere</strong>.
+        </p>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="mt-4">
+                <a asp-controller="Matchs" asp-action="Create" class="btn btn-light btn-lg fw-bold px-4 shadow me-2">
+                    + Nouveau Match
+                </a>
+                <a asp-controller="Equipes" asp-action="Create" class="btn btn-outline-light btn-lg px-4">
+                    + Ajouter Équipe
+                </a>
+            </div>
+        }
+    </div>
+    <div style="position: absolute; top: -50px; right: -50px; width: 300px; height: 300px; background: rgba(255,255,255,0.08); border-radius: 50%;"></div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-3">
+        <div class="card-custom h-100 border-start border-4 border-primary">
+            <div class="text-muted fw-bold text-uppercase small">Clubs Inscrits</div>
+            <div class="d-flex align-items-center justify-content-between mt-2">
+                <h1 class="mb-0 fw-bold text-dark">@ViewBag.NbEquipes</h1>
+                <span class="fs-1">🛡️</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card-custom h-100 border-start border-4 border-success">
+            <div class="text-muted fw-bold text-uppercase small">Buts Marqués</div>
+            <div class="d-flex align-items-center justify-content-between mt-2">
+                <h1 class="mb-0 fw-bold text-success">@ViewBag.TotalButs</h1>
+                <span class="fs-1">⚽</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card-custom h-100 border-start border-4 border-info">
+            <div class="text-muted fw-bold text-uppercase small">Avancement</div>
+            <div class="mt-2">
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="fw-bold">@ViewBag.NbMatchsJoues / @ViewBag.NbMatchs Matchs</span>
+                    <span class="fw-bold text-info">@ViewBag.Progression%</span>
+                </div>
+                <div class="progress" style="height: 10px; border-radius: 20px;">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: @ViewBag.Progression%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card-custom h-100 border-start border-4 border-warning">
+            <div class="text-muted fw-bold text-uppercase small">État du système</div>
+            <div class="d-flex align-items-center justify-content-between mt-2">
+                <h4 class="mb-0 fw-bold text-warning">En Ligne</h4>
+                <div class="spinner-grow text-warning spinner-grow-sm" role="status"></div>
+            </div>
+            <small class="text-muted">Dernière maj : @DateTime.Now.ToString("HH:mm")</small>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Leader Actuel -->
+    <div class="col-lg-5 mb-4">
+        <div class="card-custom h-100 text-center position-relative overflow-hidden">
+            <div class="bg-warning position-absolute top-0 start-0 w-100 py-2 text-dark fw-bold text-uppercase" style="letter-spacing: 2px;">
+                🏆 Leader Actuel
+            </div>
+
+            <div class="mt-5 pt-4">
+                @if (Model != null)
+                {
+                    @if (!string.IsNullOrEmpty(Model.LogoUrl))
+                    {
+                        <img src="@Model.LogoUrl" class="rounded-circle border border-4 border-white shadow-lg mb-3"
+                             style="width: 140px; height: 140px; object-fit: cover;" alt="Logo @Model.Nom" />
+                    }
+                    else
+                    {
+                        <div class="mx-auto rounded-circle bg-light d-flex align-items-center justify-content-center border border-4 mb-3" style="width: 140px; height: 140px;">
+                            <span class="fs-1">🛡️</span>
+                        </div>
+                    }
+
+                    <h2 class="fw-bold mb-1">@Model.Nom</h2>
+                    <p class="text-muted mb-4">Saison Active</p>
+
+                    <div class="row g-0 border-top border-bottom py-3 bg-light">
+                        <div class="col border-end">
+                            <h3 class="fw-bold text-primary mb-0">@Model.Points</h3>
+                            <small class="text-uppercase text-muted fw-bold" style="font-size: 0.7rem;">Points</small>
+                        </div>
+                        <div class="col border-end">
+                            <h3 class="fw-bold text-success mb-0">@Model.Victoires</h3>
+                            <small class="text-uppercase text-muted fw-bold" style="font-size: 0.7rem;">Victoires</small>
+                        </div>
+                        <div class="col">
+                            <h3 class="fw-bold text-dark mb-0">@(Model.ButsPour - Model.ButsContre)</h3>
+                            <small class="text-uppercase text-muted fw-bold" style="font-size: 0.7rem;">Diff.</small>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pb-3">
+                        <a asp-controller="Classement" asp-action="Index" class="btn btn-outline-dark rounded-pill px-4">
+                            Voir le classement complet
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="py-5">
+                        <h3 class="text-muted">En attente de résultats...</h3>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Derniers Résultats -->
+    <div class="col-lg-7 mb-4">
+        <div class="card-custom h-100">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold mb-0">⚽ Derniers Résultats</h4>
+                <a asp-controller="Matchs" asp-action="Index" class="btn btn-sm btn-light text-primary fw-bold">Tout voir</a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th class="text-end">Domicile</th>
+                            <th class="text-center">Score</th>
+                            <th>Extérieur</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.DerniersMatchs != null)
+                        {
+                            foreach (var match in (List<Match>)ViewBag.DerniersMatchs)
+                            {
+                                <tr>
+                                    <td class="text-muted small">@match.DateMatch.ToString("dd/MM")</td>
+                                    <td class="text-end fw-bold">@match.EquipeDomicile?.Nom</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-dark px-3 py-2 rounded-pill">
+                                            @match.ScoreDomicile - @match.ScoreExterieur
+                                        </span>
+                                    </td>
+                                    <td class="fw-bold">@match.EquipeExterieur?.Nom</td>
+                                </tr>
+                            }
+                        }
+
+                        @if (ViewBag.DerniersMatchs == null || ((List<Match>)ViewBag.DerniersMatchs).Count == 0)
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">
+                                    Aucun match terminé pour le moment.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

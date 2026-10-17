@@ -1,0 +1,28 @@
+﻿@model Match
+@{
+    ViewData["Title"] = "Nouveau Match";
+}
+
+<div class="container d-flex justify-content-center mt-5">
+    <div class="card-custom col-md-6">
+        <h3 class="mb-4 text-center">Planifier une rencontre</h3>
+        <form asp-action="Create">
+            <div class="form-group mb-3">
+                <label class="fw-bold">Date du match</label>
+                <input asp-for="DateMatch" class="form-control" />
+            </div>
+            <div class="row">
+                <div class="col-6 mb-3">
+                    <label class="fw-bold">Domicile</label>
+                    <select asp-for="EquipeDomicileId" class="form-control" asp-items="ViewBag.EquipeDomicileId"></select>
+                </div>
+                <div class="col-6 mb-3">
+                    <label class="fw-bold">Extérieur</label>
+                    <select asp-for="EquipeExterieurId" class="form-control" asp-items="ViewBag.EquipeExterieurId"></select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mt-3">Enregistrer</button>
+            <a asp-action="Index" class="btn btn-link w-100 mt-2">Annuler</a>
+        </form>
+    </div>
+</div>

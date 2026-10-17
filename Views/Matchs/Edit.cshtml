@@ -1,0 +1,50 @@
+﻿@model Match
+@{
+    ViewData["Title"] = "Modifier Match";
+}
+
+<div class="container d-flex justify-content-center mt-5">
+    <div class="card-custom col-md-6">
+        <h3 class="mb-4 text-center">Mise à jour du Match</h3>
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group mb-3">
+                <label class="fw-bold">Date</label>
+                <input asp-for="DateMatch" class="form-control" />
+            </div>
+
+            <div class="row mb-3">
+                <div class="col">
+                    <label>Domicile</label>
+                    <select asp-for="EquipeDomicileId" class="form-control" asp-items="ViewBag.EquipeDomicileId"></select>
+                </div>
+                <div class="col">
+                    <label>Extérieur</label>
+                    <select asp-for="EquipeExterieurId" class="form-control" asp-items="ViewBag.EquipeExterieurId"></select>
+                </div>
+            </div>
+
+            <hr />
+            <h5 class="text-center text-primary">Score Final</h5>
+            <div class="row mb-3 align-items-center">
+                <div class="col">
+                    <input asp-for="ScoreDomicile" class="form-control text-center fw-bold fs-4" />
+                </div>
+                <div class="col-1 text-center">-</div>
+                <div class="col">
+                    <input asp-for="ScoreExterieur" class="form-control text-center fw-bold fs-4" />
+                </div>
+            </div>
+
+            <div class="form-check mb-4 bg-light p-3 rounded border">
+                <input class="form-check-input" type="checkbox" asp-for="EstTermine" />
+                <label class="form-check-label fw-bold" asp-for="EstTermine">
+                    Match Terminé (Cocher pour mettre à jour le classement)
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">Sauvegarder</button>
+        </form>
+    </div>
+</div>

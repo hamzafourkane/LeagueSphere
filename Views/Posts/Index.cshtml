@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Post>
+
+@{
+    ViewData["Title"] = "Fil d'actualité";
+}
+
+<div class="container mt-4" style="max-width: 800px;">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">📢 Fil d'Actualité</h2>
+        <a asp-action="Create" class="btn btn-primary rounded-pill px-4">+ Publier un Post</a>
+    </div>
+
+    @foreach (var item in Model.OrderByDescending(p => p.DatePublication))
+    {
+        <div class="card-custom mb-4 animate-up">
+            <div class="p-3 border-bottom d-flex justify-content-between">
+                <div>
+                    <span class="fw-bold text-primary">@item.Auteur</span>
+                    <span class="text-muted small mx-2">• @item.DatePublication.ToString("dd MMM à HH:mm")</span>
+                </div>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="text-danger small text-decoration-none">
+                        🗑️ Supprimer
+                    </a>
+                }
+            </div>
+
+            <div class="p-4">
+                <h4 class="fw-bold">@item.Titre</h4>
+                <p class="fs-5">@item.Contenu</p>
+
+                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                {
+                    <img src="@item.ImageUrl" class="img-fluid rounded mb-3 w-100" style="max-height: 400px; object-fit: cover;" />
+                }
+            </div>
+
+            <div class="p-3 bg-light bg-opacity-10 border-top">
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary w-100 rounded-pill">
+                    💬 Voir les commentaires / Commenter
+                </a>
+            </div>
+        </div>
+    }
+</div>

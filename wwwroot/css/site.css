@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+}
+
+/* Cartes Modernes */
+.card-custom {
+    background: #fff;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    padding: 25px;
+    transition: transform 0.3s ease;
+}
+
+    .card-custom:hover {
+        transform: translateY(-5px);
+    }
+
+/* Tables */
+.table-modern {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+    .table-modern thead {
+        background: #333;
+        color: white;
+    }
+
+    .table-modern th, .table-modern td {
+        padding: 15px;
+        vertical-align: middle;
+    }
+
+/* Navbar */
+.navbar {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.nav-link {
+    font-weight: 500;
+    color: #555 !important;
+}
+
+    .nav-link:hover {
+        color: #007bff !important;
+    }
+
+/* Correction Footer */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1 0 auto;
+}
+/* --- STYLE D'IMPRESSION --- */
+@media print {
+    /* Cacher tout ce qui n'est pas utile */
+    header, footer, .btn, #searchInput, .navbar {
+        display: none !important;
+    }
+
+    /* Mettre le fond en blanc pour économiser l'encre */
+    body, .card-custom, .table-modern {
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+
+    /* Agrandir le tableau */
+    .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}

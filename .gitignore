@@ -1,0 +1,47 @@
+## Build & Output Directories
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+build/
+
+## Visual Studio & IDE Files
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+*.userprefs
+*.ide/
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+## .NET & Package Caches
+*.nupkg
+packages/
+project.lock.json
+project.assets.json
+
+## Rider & ReSharper
+_ReSharper*/
+*.DotSettings.user
+
+## Testing & Coverage
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.coverage
+*.coveragexml
+
+## OS Generated Files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+## Logs & Temp
+*.log
+*.tmp
+*.bak

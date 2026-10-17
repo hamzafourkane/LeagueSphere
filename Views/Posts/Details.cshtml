@@ -1,0 +1,57 @@
+﻿@model Post
+
+@{
+    ViewData["Title"] = "Détails du post";
+}
+
+<div class="container mt-4" style="max-width: 800px;">
+    <a asp-action="Index" class="btn btn-sm btn-secondary mb-3">← Retour au fil</a>
+
+    <div class="card-custom mb-4">
+        <div class="p-4">
+            <h2 class="fw-bold">@Model.Titre</h2>
+            <p class="text-muted">Publié par @Model.Auteur le @Model.DatePublication</p>
+            <hr />
+            <p class="lead">@Model.Contenu</p>
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" class="img-fluid rounded w-100 mb-3" />
+            }
+        </div>
+    </div>
+
+    <h4 class="mb-3">💬 Commentaires (@Model.Commentaires?.Count)</h4>
+
+    @if (Model.Commentaires != null)
+    {
+        @foreach (var comm in Model.Commentaires.OrderBy(c => c.DateCommentaire))
+        {
+            <div class="card p-3 mb-2 border-0 shadow-sm" style="border-radius: 12px;">
+                <div class="d-flex justify-content-between">
+                    <strong class="text-primary">@comm.Auteur</strong>
+                    <small class="text-muted">@comm.DateCommentaire.ToString("HH:mm")</small>
+                </div>
+                <p class="mb-0 mt-1">@comm.Contenu</p>
+            </div>
+        }
+    }
+
+    <div class="card-custom mt-4 p-4 bg-light">
+        <h5>Laisser un commentaire</h5>
+        <form asp-action="AjouterCommentaire" method="post">
+            <input type="hidden" name="PostId" value="@Model.Id" />
+
+            <div class="mb-3">
+                <label class="form-label">Votre nom</label>
+                <input type="text" name="Auteur" class="form-control" value="@User.Identity?.Name" placeholder="Pseudo..." />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Message</label>
+                <textarea name="Contenu" class="form-control" rows="3" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Envoyer 🚀</button>
+        </form>
+    </div>
+</div>

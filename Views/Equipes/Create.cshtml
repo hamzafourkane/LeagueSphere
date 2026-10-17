@@ -1,0 +1,40 @@
+﻿@model Equipe
+
+@{
+    ViewData["Title"] = "Ajouter une équipe";
+}
+
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="col-md-6">
+        <div class="card-custom">
+            <h2 class="text-center mb-4">Ajouter une Équipe</h2>
+
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Nom" class="control-label fw-bold mb-1"></label>
+                    <input asp-for="Nom" class="form-control" placeholder="Ex: Real Madrid" style="border-radius: 10px;" />
+                    <span asp-validation-for="Nom" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label asp-for="LogoUrl" class="control-label fw-bold mb-1"></label>
+                    <input asp-for="LogoUrl" class="form-control" placeholder="URL de l'image (https://...)" style="border-radius: 10px;" />
+                    <span asp-validation-for="LogoUrl" class="text-danger"></span>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <input type="submit" value="Créer l'équipe" class="btn btn-primary btn-lg" />
+                    <a asp-action="Index" class="btn btn-outline-secondary" style="border-radius: 50px;">Retour</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,122 @@
+@model IEnumerable<Equipe>
+@{
+    ViewData["Title"] = "Classement Officiel";
+}
+
+<div class="container mt-4">
+    <div class="card-custom">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0 fw-bold">🏆 Classement Officiel</h2>
+            <button onclick="window.print()" class="btn btn-outline-secondary">
+                🖨️ Imprimer / PDF
+            </button>
+        </div>
+
+        <div class="mb-4">
+            <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="🔍 Rechercher une équipe..." onkeyup="filtrerTableau()">
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-modern w-100 align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th onclick="sortTable(1)" style="cursor: pointer;">Club ⬍</th>
+                        <th onclick="sortTable(2)" style="cursor: pointer;" class="text-center">Pts ⬍</th>
+                        <th class="text-center">J</th>
+                        <th class="text-center">G</th>
+                        <th class="text-center">N</th>
+                        <th class="text-center">P</th>
+                        <th onclick="sortTable(7)" style="cursor: pointer;" class="text-center">+/- ⬍</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int position = 1; }
+                    @foreach (var item in Model) {
+                        <tr class="@(position == 1 ? "bg-light border-start border-5 border-warning" : "")">
+                            <td class="fw-bold">@position</td>
+                            <td>
+                                @if(!string.IsNullOrEmpty(item.LogoUrl)) {
+                                    <img src="@item.LogoUrl" width="32" height="32" class="rounded-circle me-2" style="object-fit: cover;" alt="Logo" />
+                                }
+                                <span class="fw-semibold">@item.Nom</span>
+                            </td>
+                            <td class="text-center fw-bold fs-5 text-primary">
+                                @item.Points
+                                @if (item.Victoires > item.Defaites + 2)
+                                {
+                                    <span class="badge bg-success small" style="font-size: 0.65rem; vertical-align: top;">🔥</span>
+                                }
+                                else if (item.Defaites > item.Victoires)
+                                {
+                                    <span class="badge bg-danger small" style="font-size: 0.65rem; vertical-align: top;">⚠️</span>
+                                }
+                            </td>
+                            <td class="text-center">@item.MatchsJoues</td>
+                            <td class="text-center text-success fw-bold">@item.Victoires</td>
+                            <td class="text-center text-muted">@item.Nuls</td>
+                            <td class="text-center text-danger">@item.Defaites</td>
+                            <td class="text-center fw-bold">@(item.ButsPour - item.ButsContre)</td>
+                        </tr>
+                        position++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function filtrerTableau() {
+        const input = document.getElementById("searchInput");
+        const filter = input.value.toUpperCase();
+        const table = document.querySelector(".table-modern");
+        const tr = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < tr.length; i++) {
+            const td = tr[i].getElementsByTagName("td")[1];
+            if (td) {
+                const txtValue = td.textContent || td.innerText;
+                tr[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+            }
+        }
+    }
+
+    function sortTable(n) {
+        const table = document.querySelector(".table-modern");
+        let switching = true;
+        let dir = "desc";
+        let switchcount = 0;
+
+        while (switching) {
+            switching = false;
+            const rows = table.rows;
+
+            for (let i = 1; i < (rows.length - 1); i++) {
+                let shouldSwitch = false;
+                const x = rows[i].getElementsByTagName("TD")[n];
+                const y = rows[i + 1].getElementsByTagName("TD")[n];
+
+                const xContent = isNaN(parseInt(x.innerText)) ? x.innerText.toLowerCase() : parseInt(x.innerText);
+                const yContent = isNaN(parseInt(y.innerText)) ? y.innerText.toLowerCase() : parseInt(y.innerText);
+
+                if (dir === "asc") {
+                    if (xContent > yContent) { shouldSwitch = true; break; }
+                } else if (dir === "desc") {
+                    if (xContent < yContent) { shouldSwitch = true; break; }
+                }
+            }
+
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchcount++;
+            } else {
+                if (switchcount === 0 && dir === "desc") {
+                    dir = "asc";
+                    switching = true;
+                }
+            }
+        }
+    }
+</script>

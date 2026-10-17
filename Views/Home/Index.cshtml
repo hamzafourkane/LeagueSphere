@@ -1,0 +1,167 @@
+@model FeedViewModel
+@{
+    ViewData["Title"] = "Fil d'Actualité";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Colonne Latérale : Résultats et Pronostics -->
+        <div class="col-md-4 order-md-2 mb-4">
+
+            <!-- Derniers Résultats -->
+            <div class="card-custom mb-4 p-3 bg-white text-dark shadow-sm">
+                <h5 class="fw-bold border-bottom pb-2">⚽ Derniers Résultats</h5>
+                @if (Model.MatchsRecents.Any())
+                {
+                    @foreach (var m in Model.MatchsRecents)
+                    {
+                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <span class="fw-bold small">@m.EquipeDomicile?.Nom</span>
+                            <span class="badge bg-dark px-2 py-1">@m.ScoreDomicile - @m.ScoreExterieur</span>
+                            <span class="fw-bold small">@m.EquipeExterieur?.Nom</span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted small mb-0">Aucun match terminé pour le moment.</p>
+                }
+            </div>
+
+            <!-- Pronostics Interactifs -->
+            <div class="card-custom p-3 bg-primary text-white shadow-sm">
+                <h5 class="fw-bold border-bottom pb-2 mb-3">🔥 Pronostics : À venir</h5>
+
+                @if (Model.MatchsAVenir.Any())
+                {
+                    @foreach (var m in Model.MatchsAVenir)
+                    {
+                        <div class="mb-4 pb-3 border-bottom border-white border-opacity-25">
+                            <div class="d-flex justify-content-between small mb-2 opacity-75">
+                                <span>@m.DateMatch.ToString("dd/MM HH:mm")</span>
+                                <span class="badge bg-light text-primary">
+                                    @{
+                                        var daysLeft = (m.DateMatch.Date - DateTime.Now.Date).Days;
+                                        var badgeText = daysLeft > 0 ? $"J-{daysLeft}" : (daysLeft == 0 ? "Aujourd'hui" : "En cours");
+                                    }
+                                    @badgeText
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between fw-bold mb-2">
+                                <span>@m.EquipeDomicile?.Nom</span>
+                                <span>@m.EquipeExterieur?.Nom</span>
+                            </div>
+
+                            @{
+                                int totalVotes = m.VoteDomicile + m.VoteNul + m.VoteExterieur;
+                                int pctDom = totalVotes > 0 ? (int)((double)m.VoteDomicile / totalVotes * 100) : 0;
+                                int pctNul = totalVotes > 0 ? (int)((double)m.VoteNul / totalVotes * 100) : 0;
+                                int pctExt = totalVotes > 0 ? (int)((double)m.VoteExterieur / totalVotes * 100) : 0;
+                                if (totalVotes > 0 && (pctDom + pctNul + pctExt) < 100) { pctExt = 100 - pctDom - pctNul; }
+                            }
+
+                            <form asp-controller="Matchs" asp-action="Voter" method="post" class="d-flex justify-content-between gap-1 mb-2">
+                                <input type="hidden" name="id" value="@m.Id" />
+
+                                <button type="submit" name="choix" value="domicile" class="btn btn-sm btn-light text-primary fw-bold flex-grow-1" style="font-size: 0.75rem;">
+                                    1 (@pctDom%)
+                                </button>
+                                <button type="submit" name="choix" value="nul" class="btn btn-sm btn-light text-primary fw-bold flex-grow-1" style="font-size: 0.75rem;">
+                                    N (@pctNul%)
+                                </button>
+                                <button type="submit" name="choix" value="exterieur" class="btn btn-sm btn-light text-primary fw-bold flex-grow-1" style="font-size: 0.75rem;">
+                                    2 (@pctExt%)
+                                </button>
+                            </form>
+
+                            @if (totalVotes > 0)
+                            {
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: @pctDom%"></div>
+                                    <div class="progress-bar bg-secondary" role="progressbar" style="width: @pctNul%"></div>
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: @pctExt%"></div>
+                                </div>
+                                <div class="text-center mt-1" style="font-size: 0.65rem; opacity: 0.85;">
+                                    @totalVotes votes au total
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center mt-1" style="font-size: 0.65rem; opacity: 0.85;">
+                                    Soyez le premier à voter !
+                                </div>
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="small text-center opacity-75 mb-0">Aucun match prévu pour le moment.</p>
+                }
+            </div>
+        </div>
+
+        <!-- Colonne Principale : Fil Social -->
+        <div class="col-md-8 order-md-1">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold">📢 Fil d'Actualité</h2>
+                <a asp-controller="Posts" asp-action="Create" class="btn btn-primary rounded-pill px-4 shadow-sm">+ Publier</a>
+            </div>
+
+            @if (Model.Posts != null && Model.Posts.Any())
+            {
+                @foreach (var item in Model.Posts)
+                {
+                    <div class="card-custom mb-4 shadow-sm">
+                        <div class="p-3 d-flex align-items-center">
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2 fw-bold" style="width: 42px; height: 42px;">
+                                @(string.IsNullOrEmpty(item.Auteur) ? "A" : item.Auteur.Substring(0, 1).ToUpper())
+                            </div>
+                            <div>
+                                <div class="fw-bold">@item.Auteur</div>
+                                <small class="text-muted">@item.DatePublication.ToString("dd MMM à HH:mm")</small>
+                            </div>
+                        </div>
+
+                        <div class="px-3 pb-2">
+                            <h5 class="fw-bold">@item.Titre</h5>
+                            <p class="text-secondary">@item.Contenu</p>
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" class="img-fluid rounded mb-2 w-100" style="max-height: 420px; object-fit: cover;" alt="Illustration du post" />
+                            }
+                        </div>
+
+                        <div class="p-2 border-top bg-light bg-opacity-25 d-flex justify-content-around">
+                            <form asp-controller="Posts" asp-action="ToggleLike" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                @{
+                                    bool aLike = item.Likes != null && item.Likes.Any(l => l.UserId == User.Identity?.Name);
+                                    string coeur = aLike ? "❤️" : "🤍";
+                                    string classe = aLike ? "text-danger fw-bold" : "text-muted";
+                                    int count = item.Likes?.Count ?? 0;
+                                }
+                                <button type="submit" class="btn btn-link text-decoration-none @classe" style="border:none; background:none;">
+                                    <span class="fs-5">@coeur</span>
+                                    <span class="ms-1">J'aime (@count)</span>
+                                </button>
+                            </form>
+
+                            <a asp-controller="Posts" asp-action="Details" asp-route-id="@item.Id" class="btn btn-link text-decoration-none text-muted">
+                                💬 Commenter (@(item.Commentaires?.Count ?? 0))
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="card-custom text-center py-5">
+                    <h4 class="text-muted">Aucune publication pour le moment.</h4>
+                    <p class="text-secondary">Soyez le premier à partager une actualité avec la communauté !</p>
+                    <a asp-controller="Posts" asp-action="Create" class="btn btn-outline-primary rounded-pill px-4 mt-2">Créer un post</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

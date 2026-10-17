@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - LeagueSphere</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/LeagueSphere.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold text-primary fs-4" asp-area="" asp-controller="Home" asp-action="Index">
+                    ⚽ LeagueSphere
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark fw-bold" asp-controller="Home" asp-action="Index">Accueil</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Classement" asp-action="Index">🏆 Classement</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Matchs" asp-action="Index">📅 Matchs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Equipes" asp-action="Index">🛡️ Équipes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-bold text-primary" asp-controller="Posts" asp-action="Index">💬 Communauté</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex align-items-center">
+                        <partial name="_LoginPartial" />
+                        <button id="darkModeToggle" class="btn btn-sm btn-outline-secondary ms-2" type="button">🌙 Mode Sombre</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="mt-auto py-3 text-center text-secondary border-top" style="font-size: 0.85rem;">
+        <div class="container">
+            <span>&copy; @DateTime.Now.Year <strong>LeagueSphere</strong> &bull; Conçu par Hamza & Mohamed Amine. Tous droits réservés.</span>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        const toggleButton = document.getElementById('darkModeToggle');
+        const htmlElement = document.documentElement;
+
+        if (localStorage.getItem('theme') === 'dark') {
+            htmlElement.setAttribute('data-theme', 'dark');
+            if(toggleButton) toggleButton.innerText = '☀️ Mode Clair';
+        }
+
+        if(toggleButton){
+            toggleButton.addEventListener('click', () => {
+                const currentTheme = htmlElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+                htmlElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                toggleButton.innerText = newTheme === 'dark' ? '☀️ Mode Clair' : '🌙 Mode Sombre';
+            });
+        }
+    </script>
+</body>
+</html>
