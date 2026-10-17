@@ -128,13 +128,6 @@ Au premier lancement, un administrateur est créé automatiquement via `DbSeeder
 
 ---
 
-## 👥 Auteurs
-
-Projet développé avec passion par :
-- **Hamza**
-- **Mohamed Amine**
-
----
 
 ## 📄 Licence
 
